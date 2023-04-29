@@ -1,0 +1,216 @@
+import java.io.File;
+import java.io.IOException;
+import java.util.Random;
+import java.util.Scanner;
+
+
+public class Main {
+    public static Scanner scanner;
+    public static Random rnd;
+
+    void gameSettings(String boardSize, String battleShipSize)
+  {
+      System.out.println("Enter the board size");
+      boardSize = scanner.nextLine();
+      System.out.println("Enter the battleships sizes");
+      battleShipSize = scanner.nextLine();
+
+  }
+    void initializeMap(char map[][],int row,int col)
+    {
+        for (int i=0 ; i<=row ; i++)
+        {
+            for (int j=0 ; j<col ; j++)
+            {
+                map[i][j]='-';
+            }
+        }
+    }
+    void printBoard(char map[][],int row ,int col)
+    {
+        System.out.print("    ");
+        for (int i = 0; i < col; i++) {
+            System.out.print(i + " ");
+        }
+        System.out.println();
+        for (int i = 0; i < row; i++) {
+            if (i < 10) {
+                System.out.print("  ");
+            }
+            if (i >= 10 && i<=99) {
+                System.out.print(" ");
+            }
+            System.out.print(i + " ");
+            for (int j = 0; j < col; j++) {
+                System.out.print(map[i][j] + " ");
+            }
+            System.out.println();
+        }
+        System.out.println();
+    }
+    void enterShip(int pRow, int pCol,int orientation ,int shipLenght)
+    {
+        System.out.println("Enter location and orientation for battleship of size" + shipLenght);
+        pRow = scanner.nextInt();
+        pCol = scanner.nextInt();
+        orientation= scanner.nextInt();
+    }
+boolean checkOrientation(int orientation)
+{
+    if(orientation!=0 && orientation!=1)return false;
+    return true;
+}
+boolean checkBound(int max_row,int max_col,int row ,int col)
+{
+if(row>=max_row || col>=max_col || col<0 || row<0)return false;
+return true;
+}
+boolean checkFit(int max_row,int max_col,int row ,int col,int shipLenght,int orientation)
+{
+    if(orientation==0)
+    {
+        if((col+shipLenght)>max_col)return false;
+    }
+    if(orientation==1)
+    {
+        if((row+shipLenght)>max_row)return false;
+    }
+    return true;
+}
+boolean checkOverlaps(char map[][],int orientation,int row ,int col,int shipLenght)
+{
+    if(orientation==0)
+    {
+        for (int i=0;i<shipLenght;i++)
+        {
+            if(map[row][col+i]!='-')return false;
+        }
+    }
+    if(orientation==1)
+    {
+        for (int i=0;i<shipLenght;i++)
+        {
+            if(map[row+i][col]!='-')return false;
+        }
+    }
+    return true;
+}
+boolean checkAdjacent(char map[][],int orientation,int row ,int col,int shipLenght)
+{
+    if(orientation==0) {
+        for (int i = 0; i < shipLenght + 2; i++) {
+            if (map[row + 1][col - 1 + i] != '-') return false;
+            if (map[row - 1][col - 1 + i] != '-') return false;
+        }
+        if (map[row][col - 1] != '-') return false;
+        if (map[row][col + shipLenght] != '-') return false;
+    }
+    if(orientation==1) {
+        for (int i = 0; i < shipLenght + 2; i++) {
+            if (map[row - 1 + i][col + 1] != '-') return false;
+            if (map[row - 1 + i][col - 1] != '-') return false;
+        }
+        if (map[row-1][col] != '-') return false;
+        if (map[row + shipLenght][col] != '-') return false;
+    }
+    return true;
+}
+void markShip(char map[][],int orientation,int row ,int col,int shipLenght)
+{
+    if(orientation==0) {
+        for (int i = 0; i < shipLenght; i++) {
+            map[row][col+i]='#';
+        }
+    }
+    if(orientation==1) {
+        for (int i = 0; i < shipLenght; i++) {
+            map[row+i][col]='#';
+        }
+    }
+}
+void currentGame()
+{
+    System.out.println("Your current game board");
+}
+void currentGuess()
+{
+    System.out.println("Your current guessing board");
+}
+    void comPick(int row,int col,int comOrientation,int comOrientation,int max_row,int max_col)
+    {
+        row = rnd.nextInt(max_row);
+        col= rnd.nextInt(max_col);
+        comOrientation= rnd.nextInt(2);
+    }
+void pickToAttack(int row,int col)
+{
+    System.out.println("Enter tile to attack");
+    row=scanner.nextInt();
+    col=scanner.nextInt();
+}
+boolean alreadyAttacked(char map[][],int row,int col)
+{
+    if(map[row][col]=='V')return true;
+    if(map[row][col]=='X')return true;
+    return false;
+}
+void already() {
+        System.out.println("Tile already attacked attacked again!");
+    }
+void attackSummary(char map[][],int row,int col)
+{
+    if(map[row][col]=='-') System.out.println("That is a miss!");
+    if(map[row][col]=='#') System.out.println("That is a hit!");
+    //naks
+}
+void comPickToAttack(int row,int col,int max_row,int max_col)
+{
+    row = rnd.nextInt(max_row);
+    col= rnd.nextInt(max_col);
+}
+void comPick(int row,int col)
+{
+    System.out.println("The computer attacked (" + row + "," + col + ")");
+}
+void attackSummary2(char map[][],int row,int col)
+{
+    if(map[row][col]=='-') System.out.println("That is a miss!");
+    if(map[row][col]=='#') System.out.println("That is a hit!");
+    //naks
+}
+//*****************************
+    public static void battleshipGame() {
+
+    }
+    public static void main(String[] args) throws IOException {
+        String path = args[0];
+        scanner = new Scanner(new File(path));
+        int numberOfGames = scanner.nextInt();
+        scanner.nextLine();
+
+        System.out.println("Total of " + numberOfGames + " games.");
+
+        for (int i = 1; i <= numberOfGames; i++) {
+            scanner.nextLine();
+            int seed = scanner.nextInt();
+            rnd = new Random(seed);
+            scanner.nextLine();
+            System.out.println("Game number " + i + " starts.");
+            battleshipGame();
+            System.out.println("Game number " + i + " is over.");
+            System.out.println("------------------------------------------------------------");
+        }
+        System.out.println("All games are over.");
+    }
+}
+
+
+/*         String[] boardSize;
+        boardSize= new String[] {null};
+        String boardSize = null;
+        String battleShipSize= null;
+        gameSettings(null, null);
+        char n = boardSize.charAt(0);
+        char m = boardSize.charAt(2);
+        int row = n - 48;
+        int col = m - 48;  */
